@@ -11,9 +11,10 @@ __version__ = "0.1"
 
 from PIL import Image
 import os
+import re
 
 
-def optmize_and_resize(input, output, max_w=1000, quality=85):
+def optmize_and_resize(input, output, max_w=1800, quality=85):
     with Image.open(input) as img:
         w, h = img.size
 
@@ -44,7 +45,12 @@ def get_images(dir, output):
             optmize_and_resize(image_path, output_path)
 
 
+def get_last_segment(dir):
+    match = re.search(r"[^/\\]+$", dir)
+    return match.group(0) if match else None
+
+
 dir = input("Digite o diretório de input (ex: ./img/high_res): ")
-output = "optimized"
+output = f"optimized-{get_last_segment(dir)}"
 
 get_images(dir, output)
