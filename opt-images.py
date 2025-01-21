@@ -26,7 +26,7 @@ def optmize_and_resize(input, output, max_w=1800, quality=85):
             img = img.resize((max_w, new_w), Image.Resampling.LANCZOS)
 
         # Convert to RGB
-        if img.mode in ("RGBA", "P"):
+        if img.mode in ("RGBA", "P", "L"):
             img = img.convert("RGB")
 
         img.save(output, "JPEG", optimize=True, quality=quality)
