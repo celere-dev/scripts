@@ -9,7 +9,7 @@ chmod u+rwx ./<OUTPUT_DIR>
 
 __version__ = "0.1"
 
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import os
 import re
 
@@ -26,10 +26,19 @@ def optmize_and_resize(input, output, max_w=1800, quality=85):
             img = img.resize((max_w, new_w), Image.Resampling.LANCZOS)
 
         # Convert to RGB
-        if img.mode in ("RGBA", "P", "L"):
+        if img.mode in ("RGBA", "P", "LA"):
             img = img.convert("RGB")
 
         img.save(output, "JPEG", optimize=True, quality=quality)
+
+
+def is_valid_image(file_path):
+    try:
+        with Image.open(file_path) as img:
+            img.verify()
+        return True
+    except (IOError, UnidentifiedImageError):
+        return False
 
 
 def get_images(dir, output):
@@ -39,7 +48,9 @@ def get_images(dir, output):
     for image_name in os.listdir(dir):
         image_path = os.path.join(dir, image_name)
 
-        if image_name.lower().endswith((".png", ".jpg", ".jpeg")):
+        if image_name.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(
+            image_path
+        ):
             output_path = os.path.join(output, image_name)
 
             optmize_and_resize(image_path, output_path)
