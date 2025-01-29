@@ -7,7 +7,7 @@ chmod u+x opt-images.py
 chmod u+rwx ./<OUTPUT_DIR>
 """
 
-__version__ = "0.1"
+__version__ = "0.2"
 
 from PIL import Image, UnidentifiedImageError
 import os
@@ -25,11 +25,7 @@ def optmize_and_resize(input, output, max_w=1800, quality=85):
 
             img = img.resize((max_w, new_w), Image.Resampling.LANCZOS)
 
-        # Convert to RGB
-        if img.mode in ("RGBA", "P", "LA"):
-            img = img.convert("RGB")
-
-        img.save(output, "JPEG", optimize=True, quality=quality)
+        img.save(output, img.format, optimize=True, quality=quality, dpi=(300, 300))
 
 
 def is_valid_image(file_path):
@@ -47,13 +43,17 @@ def get_images(dir, output):
 
     for image_name in os.listdir(dir):
         image_path = os.path.join(dir, image_name)
+        output_path = os.path.join(output, image_name)
 
-        if image_name.lower().endswith((".png", ".jpg", ".jpeg")) and is_valid_image(
-            image_path
-        ):
-            output_path = os.path.join(output, image_name)
-
+        if is_valid_image(image_path):
             optmize_and_resize(image_path, output_path)
+
+            continue
+
+        with open(image_path, "rb") as original, open(output_path, "wb") as copy:
+            copy.write(original.read())
+
+            print(f"Arquivo não otimizado: {image_name}")
 
 
 def get_last_segment(dir):
@@ -61,7 +61,7 @@ def get_last_segment(dir):
     return match.group(0) if match else None
 
 
-dir = input("Digite o diretório de input (ex: ./img/high_res): ")
+dir = input("Digite o diretório de input (ex: /img/high_res): ")
 output = f"optimized-{get_last_segment(dir)}"
 
 get_images(dir, output)
