@@ -4,10 +4,10 @@
 Definir permissões para o script e diretório de output:
 
 chmod u+x opt-images.py
-chmod u+rwx ./<OUTPUT_DIR>
+chmod u+rwx <OUTPUT_DIR>
 """
 
-__version__ = "0.2"
+__version__ = "0.3"
 
 from PIL import Image, UnidentifiedImageError
 import os
@@ -90,7 +90,7 @@ def get_dir_path(dir):
     return month, year
 
 
-dir = input("Digite o diretório de input (ex: /img/high_res): ")
+dir = input("Digite o diretório de input: ")
 month, year = get_dir_path(dir)
 output = f"optimized-{year}-{month}"
 
