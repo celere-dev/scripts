@@ -14,6 +14,16 @@ import os
 import re
 
 
+def get_metadata_without_dpi(img):
+    metadata_dict = {}
+
+    for key, value in img.info.items():
+        if key != "dpi":
+            metadata_dict[key] = value
+
+    return metadata_dict
+
+
 def optmize_and_resize(input, output, max_w=1800, quality=85):
     with Image.open(input) as img:
         w, h = img.size
@@ -25,7 +35,24 @@ def optmize_and_resize(input, output, max_w=1800, quality=85):
 
             img = img.resize((max_w, new_w), Image.Resampling.LANCZOS)
 
-        img.save(output, img.format, optimize=True, quality=quality, dpi=(300, 300))
+        # Get metadata
+        metadata = get_metadata_without_dpi(img)
+
+        # Get/Set DPI
+        opt_dpi = (300, 300)
+        dpi = img.info.get("dpi", opt_dpi)
+
+        if dpi[0] > 300:
+            dpi = opt_dpi
+
+        img.save(
+            output,
+            img.format,
+            optimize=True,
+            quality=quality,
+            dpi=dpi,
+            **metadata,
+        )
 
 
 def is_valid_image(file_path):
