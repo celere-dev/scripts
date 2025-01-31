@@ -7,7 +7,7 @@
 # O script em awk não verifica arquivos sem extensão.
 #
 # Executar script remotamente:
-# ssh user@host 'bash -s' < opt-images-audit.sh
+# ssh user@host 'cd <PATH> && bash -s' < opt-images-audit.sh
 
 echo "-> Quantidade total de arquivos do diretório:" &&
 ls -1 | wc -l &&
