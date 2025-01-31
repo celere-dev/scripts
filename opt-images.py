@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Script para redimensionar e otimizar imagens a partir de um diretório.
+"""Script para redimensionar e otimizar imagens a partir de diretório de imagens.
 
-Lembre-se de definir as permissões corretas:
+Definir permissões para o script e diretório de output:
 
 chmod u+x opt-images.py
 chmod u+rwx ./<OUTPUT_DIR>
@@ -11,7 +11,6 @@ __version__ = "0.2"
 
 from PIL import Image, UnidentifiedImageError
 import os
-import re
 
 
 def get_metadata_without_dpi(img):
@@ -83,12 +82,16 @@ def get_images(dir, output):
             print(f"Arquivo não otimizado: {image_name}")
 
 
-def get_last_segment(dir):
-    match = re.search(r"[^/\\]+$", dir)
-    return match.group(0) if match else None
+def get_dir_path(dir):
+    dir = os.path.normpath(dir)
+    month = os.path.basename(dir)
+    year = os.path.basename(os.path.dirname(dir))
+
+    return month, year
 
 
 dir = input("Digite o diretório de input (ex: /img/high_res): ")
-output = f"optimized-{get_last_segment(dir)}"
+month, year = get_dir_path(dir)
+output = f"optimized-{year}-{month}"
 
 get_images(dir, output)
