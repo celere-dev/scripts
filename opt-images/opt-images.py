@@ -6,8 +6,9 @@ Definir permissões para o script e diretório de output:
 chmod u+x opt-images.py
 chmod u+rwx <OUTPUT_DIR>
 """
-
 __version__ = "0.3"
+__author__ = "Claromes <claromes@celere.dev>"
+
 
 from PIL import Image, UnidentifiedImageError
 import os

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Definir permissões para o script:
 # chmod u+x opt-images-audit.sh
 #
@@ -8,6 +8,9 @@
 #
 # Executar script remotamente:
 # ssh user@host 'cd <PATH> && bash -s' < opt-images-audit.sh
+#
+# Versão: 0.1
+# Autor: Claromes <claromes@celere.dev>
 
 echo "-> Quantidade total de arquivos do diretório:" &&
 ls -1 | wc -l &&
