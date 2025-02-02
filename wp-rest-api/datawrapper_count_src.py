@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Script para encontrar a quantidade de ocorrências de chamada para "https://datawrapper.dwcdn.net"
-em um post do WordPress e salvar o resultado (ID, data, link e quantidade de source) em um TXT,
-considerando o idioma.
+"""Recupera a quantidade de ocorrências de chamada para "https://datawrapper.dwcdn.net"
+em um post do WordPress e salva o resultado (ID, data, link e quantidade de ocorrências) em um TXT,
+de acordo com o idioma.
 """
 __version__ = "0.1"
 __author__ = "Claromes <claromes@celere.dev>"
