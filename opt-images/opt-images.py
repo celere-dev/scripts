@@ -13,6 +13,9 @@ __author__ = "Claromes <claromes@celere.dev>"
 from PIL import Image, UnidentifiedImageError
 import os
 
+# Remove the size restriction
+Image.MAX_IMAGE_PIXELS = None
+
 
 def get_metadata_without_dpi(img):
     metadata_dict = {}
@@ -24,35 +27,46 @@ def get_metadata_without_dpi(img):
     return metadata_dict
 
 
+def cp_original(input, output):
+    with open(input, "rb") as original, open(output, "wb") as copy:
+        copy.write(original.read())
+
+    print(f"Arquivo não otimizado copiado: {input}")
+
+
 def optmize_and_resize(input, output, max_w=1800, quality=85):
-    with Image.open(input) as img:
-        w, h = img.size
+    try:
+        with Image.open(input) as img:
+            w, h = img.size
 
-        # Resize image
-        if w > max_w:
-            aspect_ratio = max_w / w
-            new_w = int(h * aspect_ratio)
+            # Resize image
+            if w > max_w:
+                aspect_ratio = max_w / w
+                new_w = int(h * aspect_ratio)
 
-            img = img.resize((max_w, new_w), Image.Resampling.LANCZOS)
+                img = img.resize((max_w, new_w), Image.Resampling.LANCZOS)
 
-        # Get metadata
-        metadata = get_metadata_without_dpi(img)
+            # Get metadata
+            metadata = get_metadata_without_dpi(img)
 
-        # Get/Set DPI
-        opt_dpi = (300, 300)
-        dpi = img.info.get("dpi", opt_dpi)
+            # Get/Set DPI
+            opt_dpi = (300, 300)
+            dpi = img.info.get("dpi", opt_dpi)
 
-        if dpi[0] > 300:
-            dpi = opt_dpi
+            if dpi[0] > 300:
+                dpi = opt_dpi
 
-        img.save(
-            output,
-            img.format,
-            optimize=True,
-            quality=quality,
-            dpi=dpi,
-            **metadata,
-        )
+            img.save(
+                output,
+                img.format,
+                optimize=True,
+                quality=quality,
+                dpi=dpi,
+                **metadata,
+            )
+    except (OSError, ValueError) as e:
+        print(f"Erro ao otimizar {input}: {e}")
+        cp_original(input, output)
 
 
 def is_valid_image(file_path):
