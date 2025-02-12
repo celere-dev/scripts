@@ -6,7 +6,7 @@ Definir permissões para o script e diretório de output:
 chmod u+x opt-images.py
 chmod u+rwx <OUTPUT_DIR>
 """
-__version__ = "0.3"
+__version__ = "0.5"
 __author__ = "Claromes <claromes@celere.dev>"
 
 
@@ -64,7 +64,7 @@ def optmize_and_resize(input, output, max_w=1800, quality=85):
                 dpi=dpi,
                 **metadata,
             )
-    except (OSError, ValueError) as e:
+    except (SyntaxError, OSError, ValueError) as e:
         print(f"Erro ao otimizar {input}: {e}")
         cp_original(input, output)
 
@@ -72,9 +72,10 @@ def optmize_and_resize(input, output, max_w=1800, quality=85):
 def is_valid_image(file_path):
     try:
         with Image.open(file_path) as img:
-            img.verify()
+            img.load()
         return True
-    except (IOError, UnidentifiedImageError):
+    except (SyntaxError, OSError, UnidentifiedImageError, IOError) as e:
+        print(f"Erro ao validar {file_path}: {e}")
         return False
 
 
